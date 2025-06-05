@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Cyber Select Section</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @keyframes neonPulse {
+      0%, 100% {
+        text-shadow:
+          0 0 5px #0ff,
+          0 0 10px #0ff,
+          0 0 20px #0ff,
+          0 0 40px #0ff;
+      }
+      50% {
+        text-shadow:
+          0 0 10px #0ff,
+          0 0 20px #0ff,
+          0 0 30px #0ff,
+          0 0 50px #0ff;
+      }
+    }
+
+    .neon-text {
+      animation: neonPulse 2s infinite;
+      color: #0ff;
+      font-weight: 900;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+    }
+
+    .btn-neon {
+      background: #011f3f;
+      border: 2px solid #0ff;
+      color: #0ff;
+      text-shadow:
+        0 0 5px #0ff,
+        0 0 10px #0ff;
+      transition: all 0.3s ease;
+    }
+
+    .btn-neon:hover {
+      background: #0ff;
+      color: #011f3f;
+      box-shadow:
+        0 0 10px #0ff,
+        0 0 20px #0ff,
+        0 0 40px #0ff,
+        0 0 80px #0ff;
+      transform: scale(1.05);
+    }
+
+    .btn-neon:active {
+      transform: scale(0.95);
+      box-shadow: none;
+    }
+
+    .back-arrow {
+      color: #0ff;
+      border-color: #0ff;
+      transition: all 0.3s ease;
+    }
+
+    .back-arrow:hover {
+      background-color: #0ff;
+      color: #011f3f;
+      box-shadow:
+        0 0 15px #0ff,
+        0 0 30px #0ff;
+    }
+  </style>
+</head>
+<body class="bg-black flex items-center justify-center min-h-screen relative font-mono">
+
+  <a href="home.html"
+     class="absolute top-5 left-5 flex items-center justify-center w-10 h-10 border-2 rounded-full text-xl back-arrow">
+    ←
+  </a>
+
+  <div
+    class="bg-[#011f3f] rounded-3xl shadow-lg p-12 max-w-lg w-11/12 text-center">
+    <h1 class="neon-text text-5xl mb-12">Select Section</h1>
+
+    <button
+      onclick="goToPage('9A.html')"
+      class="btn-neon w-full py-5 mb-6 text-3xl font-bold rounded-xl shadow-lg"
+    >
+      A
+    </button>
+    <button
+      onclick="goToPage('9B.html')"
+      class="btn-neon w-full py-5 mb-6 text-3xl font-bold rounded-xl shadow-lg"
+    >
+      B
+    </button>
+    <button
+      onclick="goToPage('9C.html')"
+      class="btn-neon w-full py-5 mb-6 text-3xl font-bold rounded-xl shadow-lg"
+    >
+      C
+    </button>
+    <button
+      onclick="goToPage('9D.html')"
+      class="btn-neon w-full py-5 text-3xl font-bold rounded-xl shadow-lg"
+    >
+      D
+    </button>
+  </div>
+
+  <script>
+    function goToPage(page) {
+      window.location.href = page;
+    }
+  </script>
+
+</body>
+</html>

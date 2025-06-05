@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Select Grade - Cyber Style</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-tr from-gray-900 via-black to-gray-900 min-h-screen flex items-center justify-center px-4">
+
+  <a href="home.html" 
+     class="absolute top-5 left-5 w-12 h-12 flex items-center justify-center rounded-full border-2 border-green-500 text-green-400 hover:bg-green-600 hover:text-white transition duration-300 cursor-pointer select-none"
+     aria-label="Back to Home"
+  >
+    ←
+  </a>
+
+  <div class="relative max-w-md w-full bg-gray-900 bg-opacity-80 rounded-3xl shadow-2xl p-10 flex flex-col items-center border border-green-500 animate-fadeIn">
+    <h1 class="text-4xl font-extrabold text-green-400 mb-12 tracking-widest drop-shadow-lg">
+      Select Section
+    </h1>
+
+    <button onclick="goToPage('11.html')" 
+            class="w-full py-4 bg-gradient-to-r from-green-500 to-green-700 text-black font-bold text-xl rounded-xl shadow-lg hover:from-green-700 hover:to-green-900 hover:text-white transition-all duration-300 ease-in-out 
+            focus:outline-none focus:ring-4 focus:ring-green-400 focus:ring-opacity-50"
+    >
+      11A
+    </button>
+  </div>
+
+  <script>
+    function goToPage(page) {
+      window.location.href = page;
+    }
+  </script>
+
+  <style>
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    .animate-fadeIn {
+      animation: fadeIn 1.5s ease-out forwards;
+    }
+  </style>
+</body>
+</html>

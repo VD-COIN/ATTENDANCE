@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Oda Technology Library</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* Glowing Animation */
+    @keyframes glow {
+      0%, 100% {
+        box-shadow: 0 0 10px #00e5ff, 0 0 20px #00e5ff, 0 0 30px #00e5ff;
+      }
+      50% {
+        box-shadow: 0 0 20px #00bcd4, 0 0 40px #00bcd4, 0 0 60px #00bcd4;
+      }
+    }
+
+    .glow {
+      animation: glow 2s infinite ease-in-out;
+    }
+
+    .fade-in {
+      animation: fadeIn 1.2s ease-in-out both;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body class="bg-gradient-to-br from-black via-gray-900 to-gray-800 min-h-screen flex flex-col font-sans text-white">
+
+  <!-- Header -->
+  <header class="text-center py-10 bg-gradient-to-r from-cyan-600 to-blue-700 shadow-2xl">
+    <h1 class="text-4xl md:text-5xl font-extrabold tracking-wide text-white glow">🚀 Oda digital attendance system</h1>
+    <p class="text-cyan-100 text-lg mt-2 font-light">Explore the future of learning in a digital world</p>
+  </header>
+
+  <!-- Main Content -->
+  <main class="flex-grow flex items-center justify-center p-6">
+    <div class="bg-gray-900 rounded-3xl p-10 max-w-xl w-full text-center border border-cyan-400 glow fade-in">
+      <h2 class="text-2xl md:text-3xl font-semibold text-cyan-300 mb-6">Choose Your Grade Level</h2>
+      <div class="space-y-4">
+        <button onclick="goToPage('grade9.html')" class="w-full py-3 rounded-xl bg-cyan-500 hover:bg-cyan-600 text-lg font-semibold transition duration-300">Grade 9</button>
+        <button onclick="goToPage('grade10.html')" class="w-full py-3 rounded-xl bg-cyan-500 hover:bg-cyan-600 text-lg font-semibold transition duration-300">Grade 10</button>
+        <button onclick="goToPage('grade11.html')" class="w-full py-3 rounded-xl bg-cyan-500 hover:bg-cyan-600 text-lg font-semibold transition duration-300">Grade 11</button>
+        <button onclick="goToPage('grade12.html')" class="w-full py-3 rounded-xl bg-cyan-500 hover:bg-cyan-600 text-lg font-semibold transition duration-300">Grade 12</button>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="text-center py-6 bg-gray-950 border-t border-cyan-800 text-sm text-gray-400">
+    &copy; 2025 Oda digital attendance system— developed by Nahom Debebe
+  </footer>
+
+  <!-- Page Navigation Script -->
+  <script>
+    function goToPage(page) {
+      window.location.href = page;
+    }
+  </script>
+</body>
+</html>

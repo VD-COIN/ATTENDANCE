@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cyber Page</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      background: linear-gradient(135deg, #0f0f0f, #1a1a1a);
+      color: #00fff7;
+      font-family: 'Courier New', Courier, monospace;
+    }
+
+    .cyber-glow {
+      text-shadow: 0 0 5px #00fff7, 0 0 10px #00fff7, 0 0 20px #00fff7;
+    }
+
+    .arrow {
+      transition: transform 0.2s ease;
+    }
+
+    .arrow:hover {
+      transform: translateX(-4px);
+    }
+  </style>
+</head>
+<body class="h-screen flex items-center justify-center relative px-4">
+  <!-- Back Arrow -->
+  <button onclick="goBack()" class="absolute top-4 left-4 text-cyan-400 hover:text-cyan-200">
+    <svg class="arrow w-8 h-8" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+    </svg>
+  </button>
+
+  <!-- Main Text -->
+  <div class="text-center">
+    <h1 class="text-3xl md:text-5xl cyber-glow font-bold">It is not ready now.</h1>
+  </div>
+
+  <!-- JavaScript -->
+  <script>
+    function goBack() {
+      window.location.href = 'home.html';
+    }
+  </script>
+</body>
+</html>

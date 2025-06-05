@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Attendance Form</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+</head>
+<body class="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white min-h-screen p-4">
+  <a href="home.html" class="absolute top-4 left-4 bg-green-500 hover:bg-green-400 text-black font-bold rounded-full w-10 h-10 flex items-center justify-center">&larr;</a>
+  <h1 class="text-3xl text-center text-cyan-400 font-extrabold mb-4">Class Attendance</h1>
+
+  <div id="teacherNameDisplay" class="text-center text-lg mb-4 font-semibold">Teacher: </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-center mb-6">
+    <div class="bg-gray-700 rounded-xl p-4 shadow-lg">
+      <div class="text-xl font-bold text-green-400">Present</div>
+      <div id="presentCount" class="text-2xl mt-2">0</div>
+    </div>
+    <div class="bg-gray-700 rounded-xl p-4 shadow-lg">
+      <div class="text-xl font-bold text-red-400">Absent</div>
+      <div id="absentCount" class="text-2xl mt-2">0</div>
+    </div>
+    <div class="bg-gray-700 rounded-xl p-4 shadow-lg">
+      <div class="text-xl font-bold text-yellow-400">Permitted</div>
+      <div id="permittedCount" class="text-2xl mt-2">0</div>
+    </div>
+  </div>
+
+  <div class="mb-4">
+    <label class="block font-bold mb-1">Date:</label>
+    <input type="date" id="dateb" class="w-full p-2 rounded bg-gray-800 text-white border border-cyan-500" />
+  </div>
+
+  <div class="mb-4">
+    <label class="block font-bold mb-1">Period:</label>
+    <select id="period" class="w-full p-2 rounded bg-gray-800 text-white border border-cyan-500">
+      <option value="" disabled selected>Select Period</option>
+      <option value="Online">Online</option>
+      <option value="1">1st</option>
+      <option value="2">2nd</option>
+      <option value="3">3rd</option>
+      <option value="4">4th</option>
+      <option value="5">5th</option>
+      <option value="6">6th</option>
+      <option value="7">7th</option>
+      <option value="8">8th</option>
+      <option value="Saturday">Saturday</option>
+    </select>
+  </div>
+
+  <div class="overflow-x-auto">
+    <table class="table-auto w-full border-collapse bg-gray-800 text-white rounded-xl shadow-xl">
+      <thead>
+        <tr class="bg-cyan-700">
+          <th class="p-2">ID</th>
+          <th class="p-2">Name</th>
+          <th class="p-2">Status</th>
+          <th class="p-2">Remove</th>
+        </tr>
+      </thead>
+      <tbody id="studentTable"></tbody>
+    </table>
+  </div>
+
+  <div class="flex flex-col md:flex-row gap-4 mt-6">
+    <button id="submitBtn" onclick="submitAttendance()" class="w-full bg-cyan-600 hover:bg-cyan-500 text-white font-bold py-3 rounded-xl">Submit</button>
+    <button onclick="exportToExcel()" class="w-full bg-green-600 hover:bg-green-500 text-white font-bold py-3 rounded-xl">Export to Excel</button>
+  </div>
+
+  <!-- Success/Error Modal -->
+  <div id="overlay" class="fixed inset-0 bg-black bg-opacity-50 hidden z-40"></div>
+  <div id="modal" class="hidden fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-gray-900 text-white p-6 rounded-xl shadow-2xl w-80 text-center z-50">
+    <p class="text-lg font-semibold mb-4">Message</p>
+    <button onclick="closeModal()" class="bg-cyan-600 hover:bg-cyan-500 py-2 px-4 rounded">Close</button>
+  </div>
+
+  <!-- Confirmation Modal -->
+  <div id="confirmModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60">
+    <div class="bg-gray-800 p-6 rounded-xl text-center shadow-lg w-80">
+      <p class="text-lg font-semibold mb-4 text-white">Are you sure you want to remove this student?</p>
+      <div class="flex justify-center gap-4">
+        <button id="confirmDeleteBtn" class="bg-red-600 hover:bg-red-500 px-4 py-2 rounded">Yes</button>
+        <button onclick="cancelDelete()" class="bg-gray-600 hover:bg-gray-500 px-4 py-2 rounded">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let students = JSON.parse(localStorage.getItem("attendance_students10b")) || [
+      { id: 1, name: "Anani Milkesa Bojor" }, { id: 2, name: "Barisan Gemechu Hinsene" },
+  { id: 3, name: "Bedaso Abdela Morkato" }, { id: 4, name: "Beka Abebe Korsa" },
+  { id: 5, name: "Bilen Tilahun Abdisa" }, { id: 6, name: "Bonsa Dessalegn Beyan" },
+  { id: 7, name: "Bontu Gudeta Habtamu" }, { id: 8, name: "Chala Shambu Dagne" },
+  { id: 9, name: "Dagim Teshome Adugna" }, { id: 10, name: "Jalalibsa Tesfaye Ayela" },
+  { id: 11, name: "Kaku Endale Mekonnin" }, { id: 12, name: "Kalid Abaraya Abamecha" },
+  { id: 13, name: "Kanariyan Abdana Amenu" }, { id: 14, name: "Kumbi Muleta Sobichu" },
+  { id: 15, name: "Lelise Ebrahim Yusuf" }, { id: 16, name: "Lensa Derese" },
+  { id: 17, name: "Mahilet Wogari Olana" }, { id: 18, name: "Marta Habebe Dabi" },
+  { id: 19, name: "Martusif Bira Bula" }, { id: 20, name: "Metiol Alemayehu" },
+  { id: 21, name: "Mikiyas Teshome Gesate" }, { id: 22, name: "Moti Ayano Nadisho" },
+  { id: 23, name: "Murata Suleyman Mahammad" }, { id: 24, name: "Natan Getacho Wodajo" },
+  { id: 25, name: "Obsinet Darase Abdo" }, { id: 26, name: "Olyad Dejene Deme" },
+  { id: 27, name: "Oromsiis Siyyum Gammadaa" }, { id: 28, name: "Ruth Tamirat Gebremariam" },
+  { id: 29, name: "Sahle Tamiru Kedir" }, { id: 30, name: "Samrawit Belayneh" },
+  { id: 31, name: "Teshome Wondimu Gudeta" }, { id: 32, name: "Tsehayneh Kebede" },
+  { id: 33, name: "Tsion Assefa" }, { id: 34, name: "Yadeta Lema" },
+  { id: 35, name: "Yoseph Yidnekachew" }, { id: 36, name: "Zelalem Girma" }
+];
+
+
+    const userData = JSON.parse(localStorage.getItem("userData")) || {};
+    document.getElementById("teacherNameDisplay").textContent = `Teacher: ${userData.fullName || "Unknown"}`;
+
+    let studentToDeleteIndex = null;
+
+    function renderTable() {
+      const tableBody = document.getElementById("studentTable");
+      tableBody.innerHTML = "";
+      students.forEach((student, index) => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td class="p-2">${student.id}</td>
+          <td class="p-2">${student.name}</td>
+          <td class="p-2">
+            <div class="flex justify-center gap-2">
+              <button onclick="setStatus(${index}, 'Present')" class="status-btn bg-green-700 hover:bg-green-600 px-3 py-1 rounded text-sm" id="btn-${index}-Present">Present</button>
+              <button onclick="setStatus(${index}, 'Absent')" class="status-btn bg-red-700 hover:bg-red-600 px-3 py-1 rounded text-sm" id="btn-${index}-Absent">Absent</button>
+              <button onclick="setStatus(${index}, 'Permitted')" class="status-btn bg-yellow-500 hover:bg-yellow-400 text-black px-3 py-1 rounded text-sm" id="btn-${index}-Permitted">Permitted</button>
+            </div>
+            <input type="hidden" id="status-${index}" value="Present">
+          </td>
+          <td class="p-2 text-center">
+            <button onclick="confirmDelete(${index})" class="bg-red-600 hover:bg-red-500 px-2 py-1 rounded text-sm">Remove</button>
+          </td>
+        `;
+        tableBody.appendChild(row);
+      });
+      updateCounts();
+    }
+
+    function setStatus(index, status) {
+      document.getElementById(`status-${index}`).value = status;
+      ['Present', 'Absent', 'Permitted'].forEach(s => {
+        const btn = document.getElementById(`btn-${index}-${s}`);
+        btn.classList.remove('ring-2', 'ring-offset-2', 'ring-cyan-400');
+      });
+      document.getElementById(`btn-${index}-${status}`).classList.add('ring-2', 'ring-offset-2', 'ring-cyan-400');
+      updateCounts();
+    }
+
+    function updateCounts() {
+      let present = 0, absent = 0, permitted = 0;
+      students.forEach((_, index) => {
+        const statusInput = document.getElementById(`status-${index}`);
+        if (statusInput) {
+          const status = statusInput.value;
+          if (status === "Present") present++;
+          if (status === "Absent") absent++;
+          if (status === "Permitted") permitted++;
+        }
+      });
+      document.getElementById("presentCount").textContent = present;
+      document.getElementById("absentCount").textContent = absent;
+      document.getElementById("permittedCount").textContent = permitted;
+    }
+
+    function submitAttendance() {
+      const dateb = document.getElementById("dateb").value;
+      const period = document.getElementById("period").value;
+      if (!dateb || !period) return showModal("Please fill in date and period!");
+
+      let absentList = [], permittedList = [];
+      students.forEach((student, index) => {
+        const status = document.getElementById(`status-${index}`).value;
+        if (status === "Absent") absentList.push(`${student.id}. ${student.name}`);
+        if (status === "Permitted") permittedList.push(`${student.id}. ${student.name}`);
+      });
+
+      const key = `attendance_10B_${dateb}_${period}`;
+      const dataToSave = { absent: absentList, permitted: permittedList };
+      localStorage.setItem(`attendance_${key}`, JSON.stringify(dataToSave));
+
+      let message = `Grade 10B report 📅 Date: ${dateb}\n⏰ Period: ${period}\n👨‍🏫 Teacher: ${userData.fullName || "Unknown"}`;
+      if (absentList.length) message += `\n\n❌ Absent:\n` + absentList.join("\n");
+      if (permittedList.length) message += `\n\n✅ Permitted:\n` + permittedList.join("\n");
+
+      if (absentList.length || permittedList.length) {
+        const botToken = "7515841528:AAHMo3w4dojN5o0DqRNisUKXmlKzuO080mk";
+        const chatId = "@xjdkksksksjska";
+        fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ chat_id: chatId, text: message })
+        }).then(() => showModal("Attendance submitted successfully!"))
+          .catch(err => showModal("Telegram Error: " + err.message));
+      } else {
+        showModal("Attendance submitted successfully!");
+      }
+    }
+
+    function exportToExcel() {
+      const dateb = document.getElementById("dateb").value || "NoDate";
+      const period = document.getElementById("period").value || "NoPeriod";
+      const teacher = userData.fullName || "Unknown";
+
+      const data = [
+        ["Attendance Report"],
+        [`Date: ${dateb}`, `Teacher: ${teacher}`, `Period: ${period}`],
+        [],
+        ["ID", "Name", "Status"]
+      ];
+
+      students.forEach((student, index) => {
+        const status = document.getElementById(`status-${index}`).value;
+        data.push([student.id, student.name, status]);
+      });
+
+      const worksheet = XLSX.utils.aoa_to_sheet(data);
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, "Attendance");
+      XLSX.writeFile(workbook, `Attendance_10B_${dateb}_${period}.xlsx`);
+    }
+
+    function showModal(msg) {
+      document.querySelector("#modal p").textContent = msg;
+      document.getElementById("overlay").classList.remove("hidden");
+      document.getElementById("modal").classList.remove("hidden");
+    }
+
+    function closeModal() {
+      document.getElementById("overlay").classList.add("hidden");
+      document.getElementById("modal").classList.add("hidden");
+    }
+
+    function confirmDelete(index) {
+      studentToDeleteIndex = index;
+      document.getElementById("confirmModal").classList.remove("hidden");
+    }
+
+    function cancelDelete() {
+      studentToDeleteIndex = null;
+      document.getElementById("confirmModal").classList.add("hidden");
+    }
+
+    document.getElementById("confirmDeleteBtn").addEventListener("click", () => {
+      if (studentToDeleteIndex !== null) {
+        students.splice(studentToDeleteIndex, 1);
+        localStorage.setItem("attendance_students10b", JSON.stringify(students));
+        renderTable();
+        studentToDeleteIndex = null;
+        document.getElementById("confirmModal").classList.add("hidden");
+      }
+    });
+
+    window.onload = () => {
+      renderTable();
+    };
+  </script>
+</body>
+</html>
